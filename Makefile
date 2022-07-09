@@ -19,7 +19,11 @@ clean: cleanBuildRes cleanRom cleanGfx
 preview: 
 	@higan $(ROMNAME).sfc &
 
-bitmaps : tex_pvsneslibfont tex_bg0
+bitmaps : tex_char tex_pvsneslibfont tex_bg0
+
+tex_char: Textures/mario_sprite.bmp
+	@echo convert char sprites...
+	$(GFXCONV) -gs16 -pc16 -po16 -n $<
 
 tex_pvsneslibfont: pvsneslibfont.bmp
 	@echo convert font with no tile reduction ... $(notdir $@)
