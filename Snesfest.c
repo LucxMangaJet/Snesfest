@@ -1,36 +1,32 @@
 #include <snes.h>
 
-extern char snesfont;
+extern u8 snesfont;
 
-
-extern char tex_background1_map;
-extern char tex_background1_map_end;
-extern char tex_background1_pic;
-extern char tex_background1_pic_end;
-extern char tex_background1_pal;
+extern u8 m0, m0_end, p0, p0_end, t0, t0_end;
 
 void init(){
 	consoleInit();
 
 	//Background
 	//Copy tile to VRAM
-	bgInitTileSet(0, &tex_background1_pic, &tex_background1_pal, 0, (&tex_background1_pic_end - tex_background1_pic), 8, BG_4COLORS0, 0x2000);
+	bgInitTileSet(1, &t0, &p0, 0, (&t0_end - &t0), 8, BG_4COLORS0, 0x6000);
 
-	//Copy Map to VRAM
-	bgInitMapSet(0, &tex_background1_map, (&tex_background1_map_end - &tex_background1_map), SC_32x32, 0x0000);
-
-
+	// Copy Map to VRAM
+	bgInitMapSet(1, &m0, (&m0_end - &m0),SC_32x32, 0x1000);
 	//Text
-	//consoleInitText(2, 0, &snesfont);
+	consoleInitText(0, 0, &snesfont);
+	consoleSetTextCol(RGB5(0,0,0), RGB5(31,31,31));
 
-	//consoleDrawText(5,8,"SNES FEST");
-
+	consoleDrawText(0,1,"t0 size %p", (&t0_end - &t0));
+	consoleDrawText(0,2,"m0 size %p", (&m0_end - &m0));
+	consoleDrawText(0,3,"p0 size %p", (&p0_end - &p0));
+	
 	//Init
-	setMode(BG_MODE1, 0);
-	bgSetDisable(1);
-	bgSetDisable(2);
+	setMode(BG_MODE0, 0);
+	//bgSetDisable(1);
+	//bgSetDisable(2);
 
-	setBrightness(0xF); 
+	setScreenOn(); 
 }
 
 void update(){

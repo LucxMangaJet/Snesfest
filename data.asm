@@ -2,18 +2,16 @@
 
 .section ".rodata1" superfree
 
-snesfont:                .incbin "pvsneslibfont.pic"
+snesfont: .incbin "pvsneslibfont.pic"
+snesfont_end:
 
+m0: .incbin "Textures/bg0.map"
+m0_end:
 
-tex_background1_map:     .incbin "Textures/conceptSNES.map"
-tex_background1_map_end:
+p0: .incbin "Textures/bg0.pal"
+p0_end:
 
-tex_background1_pal:     .incbin "Textures/conceptSNES.pal"
-tex_background1_pal_end:
-
-tex_background1_pic:     .incbin "Textures/conceptSNES.pic"
-tex_background1_pic_end:
-
-
+t0: .incbin "Textures/bg0.pic"
+t0_end:
 
 .ends
