@@ -1,4 +1,5 @@
 #include <snes.h>
+#include "entity.c"
 
 //DATA
 extern u8 snesfont;
@@ -7,8 +8,8 @@ extern u8 char_pic, char_pic_end, char_pal, char_pal_end;
 
 //VARIABLES
 
-u16 posX = 32;
-u16 posY = 96; 
+Entity player;
+
 
 void init(){
 
@@ -25,16 +26,14 @@ void init(){
 	consoleInitText(0, 0, &snesfont);
 	consoleSetTextCol(RGB5(0,0,0), RGB5(31,31,31));
 
-	consoleDrawText(0,1,"t0 size %p", (&t0_end - &t0));
-	consoleDrawText(0,2,"m0 size %p", (&m0_end - &m0));
-	consoleDrawText(0,3,"p0 size %p", (&p0_end - &p0));
-
-	//OEM
-
+	//ENTITIES
 	oamInitGfxSet(&char_pic, (&char_pic_end-&char_pic), &char_pal, (&char_pal_end - &char_pal), 0, 0x4000, OBJ_SIZE16_L32);
-
-	oamSet(0,posX,posY,3,0,0,0,0);
-	oamSetEx(0, OBJ_SMALL, OBJ_SHOW);
+	
+	player.id =0;
+	player.priority = 3;
+	player.x = 92;
+	
+	setEntityState(&player,OBJ_SMALL, OBJ_SHOW);
 
 	//
 	setMode(BG_MODE0, 0);
@@ -43,13 +42,26 @@ void init(){
 
 void update(){
 
-	posX+=2;
-	posY+=1;
+	consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
+	consoleDrawText(0,4,"x %i y %i       ",player.x, player.y);
 
-	consoleDrawText(0,4,"x %i y %i",posX, posY);
-
-	oamSet(0,posX,posY,0,0,0,0,0);
+	updateEntity(&player);
 	WaitForVBlank();
+}
+
+void processInput(){
+
+	u16 pad0 = padsCurrent(0);
+
+	if(pad0 & KEY_RIGHT)
+		player.x ++;
+	if(pad0 & KEY_LEFT)
+		player.x--;
+	if(pad0 & KEY_UP)
+		player.y--;
+	if(pad0 & KEY_DOWN)
+		player.y++;
+
 }
 
 
@@ -57,7 +69,9 @@ int main(void) {
 	
 	init();
 	
-	while(1)
+	while(1){
+		processInput();
 		update();
+	}
 	return 0;
 }
