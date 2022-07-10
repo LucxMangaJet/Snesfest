@@ -8,7 +8,26 @@ extern u8 char_pic, char_pic_end, char_pal, char_pal_end;
 
 //VARIABLES
 
-Entity player;
+u8 freeEntityID = 0;
+
+u8 newEntityID(){return freeEntityID++;}
+
+typedef struct 
+{
+	Entity entity;
+
+	s16 dx;
+	s16 dy;
+
+	s16 speed;
+	s16 jumpForce;
+	s16 gravity;
+	u8 grounded;
+
+} Player;
+
+Player player0;
+Player player1;
 
 
 void init(){
@@ -29,41 +48,87 @@ void init(){
 	//ENTITIES
 	oamInitGfxSet(&char_pic, (&char_pic_end-&char_pic), &char_pal, (&char_pal_end - &char_pal), 0, 0x4000, OBJ_SIZE16_L32);
 	
-	player.id =0;
-	player.priority = 3;
-	player.x = 92;
-	
-	setEntityState(&player,OBJ_SMALL, OBJ_SHOW);
+	player0.dx = 0;
+	player0.dy = 0;
+	player0.speed = 4;
+	player0.gravity = 1;
+	player0.jumpForce = -12;
+	player0.entity = defaultEntity();
+	player0.entity.id = newEntityID();
+	player0.entity.priority = 3;
+	player0.entity.x = 180;
+	player0.entity.y = 135;
+	setEntityState(&player0.entity,OBJ_LARGE, OBJ_SHOW);
+
+	player1.dx = 0;
+	player1.dy = 0;
+	player1.speed = 4;
+	player1.gravity = 1;
+	player1.jumpForce = -10;
+	player1.entity = defaultEntity();
+	player1.entity.id = newEntityID();
+	player1.entity.priority = 3;
+	player1.entity.x = 20;
+	player1.entity.y = 135;
+	player1.entity.palletOffset = 1;
+	player1.entity.flipX = 1;
+	setEntityState(&player1.entity, OBJ_LARGE, OBJ_SHOW);
 
 	//
 	setMode(BG_MODE0, 0);
 	setScreenOn();
 }
 
+void updatePlayer(Player* _player){
+
+	if(_player->dx != 0)
+		_player->entity.flipX = _player->dx >0;
+
+	_player->dy += _player->gravity;
+
+	_player->entity.x += _player->dx;
+	_player->entity.y += _player->dy;
+
+	if(_player->entity.y >135){
+		_player->entity.y = 135;
+		_player->dy =0;
+		_player->grounded = 1;
+	}else{
+		_player->grounded = 0;
+	}
+
+	updateEntity(&_player->entity);
+}
+
 void update(){
 
-	consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
-	consoleDrawText(0,4,"x %i y %i       ",player.x, player.y);
+	//consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
+	//consoleDebugEntity(0,4, &player0);
+	//consoleDebugEntity(0,5, &player1);
 
-	updateEntity(&player);
-	WaitForVBlank();
+	updatePlayer(&player0);
+	updatePlayer(&player1);	
+}
+
+
+void processPlayerInput(u16 _pad, Player* _player){
+
+	if(_pad & KEY_RIGHT)
+		_player->dx  = _player->speed;
+	else if(_pad & KEY_LEFT)
+		_player->dx = -_player->speed;
+	else 
+	 	_player->dx = 0;
+
+	if((_pad & KEY_UP) && _player->grounded)
+		_player->dy = _player->jumpForce;
 }
 
 void processInput(){
 
-	u16 pad0 = padsCurrent(0);
-
-	if(pad0 & KEY_RIGHT)
-		player.x ++;
-	if(pad0 & KEY_LEFT)
-		player.x--;
-	if(pad0 & KEY_UP)
-		player.y--;
-	if(pad0 & KEY_DOWN)
-		player.y++;
-
+	processPlayerInput(padsCurrent(0), &player0);
+	processPlayerInput(padsCurrent(1), &player1);
 }
-
 
 int main(void) {	
 	
@@ -72,6 +137,7 @@ int main(void) {
 	while(1){
 		processInput();
 		update();
+		WaitForVBlank();
 	}
 	return 0;
 }
