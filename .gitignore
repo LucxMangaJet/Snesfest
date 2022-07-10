@@ -1,5 +1,11 @@
 linkfile
-pvsneslibfont.pic
+*.pic
+*.map
+*.pal
+*.clm
+
+.vscode
+
 Snesfest.sym
 
 Emulator/NO$SNS.FNT
