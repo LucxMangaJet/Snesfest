@@ -4,6 +4,7 @@
 //DATA
 extern u8 snesfont;
 extern u8 m0, m0_end, p0, p0_end, t0, t0_end;
+extern u8 c0, c0_end;
 extern u8 char_pic, char_pic_end, char_pal, char_pal_end;
 
 //VARIABLES
@@ -29,11 +30,18 @@ typedef struct
 Player player0;
 Player player1;
 
+s16 maxDY = 8;
+
+u16 getCollisionTile(u16 x, u16 y) {
+	u16* tile = ((u16*)&c0) + ((y>>3)*32 + (x>>3));
+
+	return (*tile);
+}
+
 
 void init(){
 
 	consoleInit();
-
 
 	//Background
 	//Copy tile to VRAM
@@ -84,18 +92,27 @@ void updatePlayer(Player* _player){
 	if(_player->dx != 0)
 		_player->entity.flipX = _player->dx >0;
 
-	_player->dy += _player->gravity;
+	s16 dy = _player->dy;
+	dy += _player->gravity;
+	if(dy > maxDY)
+		dy = maxDY;
+	_player->dy = dy;
 
-	_player->entity.x += _player->dx;
-	_player->entity.y += _player->dy;
+	u8 x = _player->entity.x + _player->dx;
+	u8 y = _player->entity.y + _player->dy;
 
-	if(_player->entity.y >135){
-		_player->entity.y = 135;
+	u16 colData = getCollisionTile(x+ 16, y +32); //center bottom
+
+	if(colData){
+		y = y & 0xF8;
 		_player->dy =0;
 		_player->grounded = 1;
 	}else{
 		_player->grounded = 0;
 	}
+
+	_player->entity.x =x;
+	_player->entity.y =y;
 
 	updateEntity(&_player->entity);
 }

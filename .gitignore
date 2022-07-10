@@ -2,6 +2,7 @@ linkfile
 *.pic
 *.map
 *.pal
+*.clm
 
 .vscode
 

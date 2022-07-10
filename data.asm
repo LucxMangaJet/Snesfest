@@ -15,13 +15,23 @@ char_pal_end:
 snesfont: .incbin "pvsneslibfont.pic"
 snesfont_end:
 
-m0: .incbin "Textures/bg0.map"
+m0: .incbin "Textures/TestLevelBackground1.map"
 m0_end:
 
-p0: .incbin "Textures/bg0.pal"
+p0: .incbin "Textures/TestLevelBackground1.pal"
 p0_end:
 
-t0: .incbin "Textures/bg0.pic"
+t0: .incbin "Textures/TestLevelBackground1.pic"
 t0_end:
+
+.ends
+
+
+.section ".rodata2" superfree
+
+; COLLISION DATA
+
+c0: .incbin "Textures/TestLevelCollisionMap.clm"
+c0_end:
 
 .ends

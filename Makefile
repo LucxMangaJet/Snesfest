@@ -19,7 +19,7 @@ clean: cleanBuildRes cleanRom cleanGfx
 preview: 
 	@higan $(ROMNAME).sfc &
 
-bitmaps : tex_char tex_pvsneslibfont tex_bg0
+bitmaps : tex_char tex_pvsneslibfont tex_bg0 tex_bg0_col
 
 tex_char: Textures/ObjectLayerSheet.bmp
 	@echo convert char sprites...
@@ -29,6 +29,10 @@ tex_pvsneslibfont: pvsneslibfont.bmp
 	@echo convert font with no tile reduction ... $(notdir $@)
 	$(GFXCONV) -n -gs8 -po2 -pc4 -pe1 -mR! -m! -p! $<
 
-tex_bg0: Textures/bg0.bmp
+tex_bg0: Textures/TestLevelBackground1.bmp
 	@echo convert bitmap ... $(notdir $@)
 	$(GFXCONV) -pc4 -n -gs8 -pe0 -po4 -fbmp -m $<
+
+tex_bg0_col: Textures/TestLevelCollisionMap.bmp
+	@echo convert collision map ... $(notdir $@)
+	$(GFXCONV) -pr -pc4 -n -gs8 -mc $<
