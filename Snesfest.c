@@ -1,11 +1,6 @@
 #include <snes.h>
+#include "cdata.c"
 #include "entity.c"
-
-//DATA
-extern u8 snesfont;
-extern u8 m0, m0_end, p0, p0_end, t0, t0_end;
-extern u8 c0, c0_end;
-extern u8 char_pic, char_pic_end, char_pal, char_pal_end;
 
 //VARIABLES
 
@@ -33,9 +28,11 @@ Player player1;
 s16 maxDY = 8;
 
 u16 getCollisionTile(u16 x, u16 y) {
-	u16* tile = ((u16*)&c0) + ((y>>3)*32 + (x>>3));
+	
+	return 0;
 
-	return (*tile);
+	//u16* tile = ((u16*)&c0) + ((y>>3)*32 + (x>>3));
+	//return (*tile);
 }
 
 void initPlayers(){
@@ -68,28 +65,31 @@ void initPlayers(){
 }
 
 
+
 void init(){
 
 	consoleInit();
 
-	//Background
-	//Copy tile to VRAM
-	bgInitTileSet(0, &t0, &p0, 0, (&t0_end - &t0), 8, BG_4COLORS0, 0x6000);
+	// Put screen off and Wait VBlank to allow us to update VRAM
+    setBrightness(0);
+    WaitForVBlank();
+    
+	//Objects
+	oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, &d_pal, d_pal_size, 0, 0x2000, OBJ_SIZE16_L32);
 
-	// Copy Map to VRAM
-	bgInitMapSet(0, &m0, (&m0_end - &m0),SC_32x32, 0x1000);
+	//Background
+	bgInitTileSet(1,d_bg_tiles, d_pal,0, d_bg_tiles_size, d_pal_size, BG_16COLORS, 0x1000);
+	bgInitMapSet(1, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x4000);
 
 	//Text
 	//consoleInitText(0, 0, &snesfont);
 	//consoleSetTextCol(RGB5(0,0,0), RGB5(31,31,31));
-
 	//ENTITIES
-	oamInitGfxSet(&char_pic, (&char_pic_end-&char_pic), &char_pal, (&char_pal_end - &char_pal), 0, 0x4000, OBJ_SIZE16_L32);
 	
 	initPlayers();
 
 	//
-	setMode(BG_MODE0, 0);
+	setMode(BG_MODE1, 0);
 	setScreenOn();
 }
 
@@ -107,7 +107,7 @@ void updatePlayer(Player* _player){
 	u8 x = _player->entity.x + _player->dx;
 	u8 y = _player->entity.y + _player->dy;
 
-	u16 colData = getCollisionTile(x+ 16, y +32); //center bottom
+	u16 colData =  y > 150; //getCollisionTile(x+ 16, y +32); //center bottom
 
 	if(colData){
 		y = y & 0xF8;

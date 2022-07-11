@@ -23,20 +23,48 @@ cleanTex:
 preview: 
 	@higan $(ROMNAME).sfc &
 
-bitmaps : tex_char tex_pvsneslibfont tex_bg0 tex_bg0_col
+#--- Graphics options
+#-gb               add blank tile management (for multiple bgs)");
+#-gp               Output in packed pixel format");
+#-glz              Output in lzss compressed pixel format");
+#-gs(8|16|32|64)   Size of image blocks in pixels [8]");
 
-tex_char: Textures/ObjectLayerSheet.bmp
-	@echo convert char sprites...
-	$(GFXCONV) -gs32 -pc16 -po16 -n $<
+#--- Map options
+#-m!               Exclude map from output");
+#-m                Convert the whole picture");
+#-mp               Convert the whole picture with high priority");
+#-m7               Convert the whole picture for mode 7 format");
+#-m5               Convert the whole picture for mode 5 & 6 512 width hires");
+#-mc               Generate collision map only");
+#-ms#              Generate collision map only with sprites table");
+#                   where # is the 1st tile corresponding to a sprite (0 to 255)");
+#-mn#              Generate the whole picture with an offset for tile number");
+#                   where # is the offset in decimal (0 to 2047)");
+#-mR!              No tile reduction (not advised)");
+#-m32p             Generate tile map organized in pages of 32x32 (good for scrolling)");
+#-me               Convert the map for PVSneslib map engine");
+#-mt(filename)     Tileset picture filename (PNG,BMP,PCX) for PVSneslib map engine matching");
+
+#--- Palette options ---
+#-p!               Exclude palette from output.");
+#-pc(4|16|128|256) The number of colors to use [256]");
+#-po#              The number of colors to output (0 to 256) to the filename.pal");
+#-pe#              The palette entry to add to map tiles (0 to 16)");
+#-pt#              The palette entry to add to tileset (0 to 16) for PVSneslib map engine");
+#-pr               Rearrange palette, and preserve palette numbers in the tilemap");
+#-pR               Palette rounding");
+#-- File options
+#-f[bmp|pcx|tga|png]   convert a bmp or pcx or tga or png file [bmp]");
+
+#--- Misc options ---
+#-n                no border");
+#-q                quiet mode");
+
+bitmaps: tex_pvsneslibfont tex_bg1
+
+tex_bg1:
+	$(GFXCONV) -n -m -gs8 -p! -pc16 -fpng -mtTextures/BackgroundSet.bin Textures/BG1.png
 
 tex_pvsneslibfont: pvsneslibfont.bmp
 	@echo convert font with no tile reduction ... $(notdir $@)
 	$(GFXCONV) -n -gs8 -po2 -pc4 -pe1 -mR! -m! -p! $<
-
-tex_bg0: Textures/TestLevelBackground1.bmp
-	@echo convert bitmap ... $(notdir $@)
-	$(GFXCONV) -pc4 -n -gs8 -pe0 -po4 -fbmp -m $<
-
-tex_bg0_col: Textures/TestLevelCollisionMap.bmp
-	@echo convert collision map ... $(notdir $@)
-	$(GFXCONV) -pr -pc4 -n -gs8 -mc $<
