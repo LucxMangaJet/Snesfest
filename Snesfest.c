@@ -70,16 +70,12 @@ void init(){
 
 	consoleInit();
 
-	// Put screen off and Wait VBlank to allow us to update VRAM
-    setBrightness(0);
-    WaitForVBlank();
-    
 	//Objects
-	oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, &d_pal, d_pal_size, 0, 0x2000, OBJ_SIZE16_L32);
+	oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
 
 	//Background
-	bgInitTileSet(1,d_bg_tiles, d_pal,0, d_bg_tiles_size, d_pal_size, BG_16COLORS, 0x1000);
-	bgInitMapSet(1, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x4000);
+	bgInitTileSet(0,d_bg_tiles, d_pal, 0, d_bg_tiles_size, 128, BG_16COLORS, 0x4000);
+	bgInitMapSet(0, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x8000);
 
 	//Text
 	//consoleInitText(0, 0, &snesfont);
@@ -107,7 +103,7 @@ void updatePlayer(Player* _player){
 	u8 x = _player->entity.x + _player->dx;
 	u8 y = _player->entity.y + _player->dy;
 
-	u16 colData =  y > 150; //getCollisionTile(x+ 16, y +32); //center bottom
+	u16 colData =  y > 180; //getCollisionTile(x+ 16, y +32); //center bottom
 
 	if(colData){
 		y = y & 0xF8;

@@ -10,7 +10,7 @@ include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
 # ROMNAME is used in snes_rules file
 export ROMNAME := Snesfest
 
-all: bitmaps $(ROMNAME).sfc preview
+all: bitmaps maps $(ROMNAME).sfc preview
 
 clean: cleanBuildRes cleanRom cleanTex
 
@@ -19,6 +19,10 @@ cleanTex:
 	@find . -type f -regex '\(.*\.pic\|.*\.map\|.*\.clm\)' -delete
 
 #---------------------------------------------------------------------------------
+
+maps:
+	@echo Running map_maker.py
+	@python map_maker.py
 
 preview: 
 	@higan $(ROMNAME).sfc &
@@ -60,10 +64,10 @@ preview:
 #-n                no border");
 #-q                quiet mode");
 
-bitmaps: tex_pvsneslibfont tex_bg1
+bitmaps: tex_pvsneslibfont #tex_bg1
 
-tex_bg1:
-	$(GFXCONV) -n -m -gs8 -p! -pc16 -fpng -mtTextures/BackgroundSet.bin Textures/BG1.png
+#tex_bg1:
+#	$(GFXCONV) -n -m -gs8 -p! -pc16 -fpng -mtTextures/BackgroundSet.bin Textures/BG1.png
 
 tex_pvsneslibfont: pvsneslibfont.bmp
 	@echo convert font with no tile reduction ... $(notdir $@)
