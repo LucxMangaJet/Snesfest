@@ -12,7 +12,11 @@ export ROMNAME := Snesfest
 
 all: bitmaps $(ROMNAME).sfc preview
 
-clean: cleanBuildRes cleanRom cleanGfx
+clean: cleanBuildRes cleanRom cleanTex
+
+cleanTex:
+	@echo clean graphics data
+	@find . -type f -regex '\(.*\.pic\|.*\.map\|.*\.clm\)' -delete
 
 #---------------------------------------------------------------------------------
 
