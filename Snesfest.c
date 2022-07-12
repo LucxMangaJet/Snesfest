@@ -2,6 +2,10 @@
 #include "cdata.c"
 #include "entity.c"
 
+
+#define MAP_PAL(x) (x << 10)
+
+
 //VARIABLES
 
 u8 freeEntityID = 0;
@@ -26,6 +30,11 @@ Player player0;
 Player player1;
 
 s16 maxDY = 8;
+
+u8 zero[256];
+u8 pallette[512];
+u16 map[32*32];
+s16 i;
 
 u16 getCollisionTile(u16 x, u16 y) {
 	
@@ -70,22 +79,33 @@ void init(){
 
 	consoleInit();
 
+	//tilemap format
+	//v-flip h-flip prio, pallete, tileIndex
+	//vhopppcc cccccccc
+
+	for ( i = 0; i < 32*32; i++)
+		map[i] = MAP_PAL((i/256)%8) + i%256;
+	
+    dmaCopyCGram(&d_pal, 0, 256*2); 
+
+    bgInitMapSet(0, (u8 *) map, d_map_bg1_size, SC_32x32, 0x0000);
+    
+	// Init graphics pointeur for each BG
+    bgSetGfxPtr(0, 0x1000);
+	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
+    
 	//Objects
-	oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
-
-	//Background
-	bgInitTileSet(0,d_bg_tiles, d_pal, 0, d_bg_tiles_size, 128, BG_16COLORS, 0x4000);
-	bgInitMapSet(0, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x8000);
-
-	//Text
-	//consoleInitText(0, 0, &snesfont);
-	//consoleSetTextCol(RGB5(0,0,0), RGB5(31,31,31));
-	//ENTITIES
+	//oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
+	
+	dmaCopyVram(&d_obj_tiles,0x2000,d_obj_tiles_size);
+	oamInitGfxAttr(0x2000, OBJ_SIZE16_L32);
 	
 	initPlayers();
 
 	//
 	setMode(BG_MODE1, 0);
+	bgSetDisable(1);
+	bgSetDisable(2);
 	setScreenOn();
 }
 

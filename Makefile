@@ -64,7 +64,7 @@ preview:
 #-n                no border");
 #-q                quiet mode");
 
-bitmaps: tex_pvsneslibfont #tex_bg1
+bitmaps: #tex_pvsneslibfont #tex_bg1
 
 #tex_bg1:
 #	$(GFXCONV) -n -m -gs8 -p! -pc16 -fpng -mtTextures/BackgroundSet.bin Textures/BG1.png

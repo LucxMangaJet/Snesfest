@@ -4,8 +4,8 @@ import io
 map = bytearray()
 
 for x in range(32*32):
-    map.append(0x00)
-    map.append(x%256)
+    map.append(x%64)
+    map.append(x%17)
 
 f = open("Maps/map1.bin", "wb")
 
