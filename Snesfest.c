@@ -56,6 +56,7 @@ void initPlayers(){
 	player0.entity.priority = 3;
 	player0.entity.x = 180;
 	player0.entity.y = 135;
+	player0.entity.palletOffset = 11;
 	setEntityState(&player0.entity,OBJ_LARGE, OBJ_SHOW);
 
 	player1.dx = 0;
@@ -73,15 +74,9 @@ void initPlayers(){
 	setEntityState(&player1.entity, OBJ_LARGE, OBJ_SHOW);
 }
 
-
-
 void init(){
 
 	consoleInit();
-
-	//tilemap format
-	//v-flip h-flip prio, pallete, tileIndex
-	//vhopppcc cccccccc
 
 	for ( i = 0; i < 32*32; i++)
 		map[i] = MAP_PAL((i/256)%8) + i%256;
@@ -92,12 +87,12 @@ void init(){
     
 	// Init graphics pointeur for each BG
     bgSetGfxPtr(0, 0x1000);
-	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
+	dmaCopyVram(&d_obj_tiles, 0x1000, d_obj_tiles_size);
     
 	//Objects
 	//oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
 	
-	dmaCopyVram(&d_obj_tiles,0x2000,d_obj_tiles_size);
+	dmaCopyVram(&d_obj_tiles,0x2000, d_obj_tiles_size);
 	oamInitGfxAttr(0x2000, OBJ_SIZE16_L32);
 	
 	initPlayers();
@@ -144,6 +139,8 @@ void update(){
 	//consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
 	//consoleDebugEntity(0,4, &player0);
 	//consoleDebugEntity(0,5, &player1);
+
+	player0.entity.palletOffset = player0.entity.palletOffset+1 %256;
 
 	updatePlayer(&player0);
 	updatePlayer(&player1);	
