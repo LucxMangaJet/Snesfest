@@ -22,7 +22,7 @@ cleanTex:
 
 maps:
 	@echo Running map_maker.py
-	@python map_maker.py
+	# @python map_maker.py
 
 preview: 
 	@higan $(ROMNAME).sfc &

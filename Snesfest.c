@@ -56,20 +56,20 @@ void initPlayers(){
 	player0.entity.priority = 3;
 	player0.entity.x = 180;
 	player0.entity.y = 135;
-	player0.entity.palletOffset = 11;
+	player0.entity.palletOffset = 0;
 	setEntityState(&player0.entity,OBJ_LARGE, OBJ_SHOW);
 
 	player1.dx = 0;
 	player1.dy = 0;
 	player1.speed = 4;
 	player1.gravity = 1;
-	player1.jumpForce = -10;
+	player1.jumpForce = -12;
 	player1.entity = defaultEntity();
 	player1.entity.id = newEntityID();
 	player1.entity.priority = 3;
 	player1.entity.x = 20;
 	player1.entity.y = 135;
-	player1.entity.palletOffset = 1;
+	player1.entity.gfxOffset = 4;
 	player1.entity.flipX = 1;
 	setEntityState(&player1.entity, OBJ_LARGE, OBJ_SHOW);
 }
@@ -87,7 +87,7 @@ void init(){
     
 	// Init graphics pointeur for each BG
     bgSetGfxPtr(0, 0x1000);
-	dmaCopyVram(&d_obj_tiles, 0x1000, d_obj_tiles_size);
+	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
     
 	//Objects
 	//oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
@@ -107,7 +107,7 @@ void init(){
 void updatePlayer(Player* _player){
 
 	if(_player->dx != 0)
-		_player->entity.flipX = _player->dx >0;
+		_player->entity.flipX = _player->dx <0;
 
 	s16 dy = _player->dy;
 	dy += _player->gravity;
@@ -118,10 +118,10 @@ void updatePlayer(Player* _player){
 	u8 x = _player->entity.x + _player->dx;
 	u8 y = _player->entity.y + _player->dy;
 
-	u16 colData =  y > 180; //getCollisionTile(x+ 16, y +32); //center bottom
+	u16 collision =  y > 180; //getCollisionTile(x+ 16, y +32); //center bottom
 
-	if(colData){
-		y = y & 0xF8;
+	if(collision){
+		y = 180;//y & 0xF8;
 		_player->dy =0;
 		_player->grounded = 1;
 	}else{
@@ -139,8 +139,6 @@ void update(){
 	//consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
 	//consoleDebugEntity(0,4, &player0);
 	//consoleDebugEntity(0,5, &player1);
-
-	player0.entity.palletOffset = player0.entity.palletOffset+1 %256;
 
 	updatePlayer(&player0);
 	updatePlayer(&player1);	
