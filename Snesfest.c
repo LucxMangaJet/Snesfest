@@ -79,8 +79,8 @@ void init(){
 	consoleInit();
 
 	for ( i = 0; i < 32*32; i++)
-		map[i] = MAP_PAL((i/256)%8) + i%256;
-	
+		map[i] = MAP_PAL(i%8) + i /16;
+
     dmaCopyCGram(&d_pal, 0, 256*2); 
 
     bgInitMapSet(0, (u8 *) map, d_map_bg1_size, SC_32x32, 0x0000);
