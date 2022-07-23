@@ -10,7 +10,7 @@ include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
 # ROMNAME is used in snes_rules file
 export ROMNAME := Snesfest
 
-all: bitmaps maps $(ROMNAME).sfc preview
+all: bitmaps convert_palette $(ROMNAME).sfc preview
 
 clean: cleanBuildRes cleanRom cleanTex
 
@@ -20,9 +20,10 @@ cleanTex:
 
 #---------------------------------------------------------------------------------
 
-maps:
-	@echo Running map_maker.py
-	# @python map_maker.py
+convert_palette:
+	@echo converting palette
+	@python3 palette_converter.py  Textures/palette.hex Textures/palette.bin --log
+
 
 preview: 
 	@higan $(ROMNAME).sfc &

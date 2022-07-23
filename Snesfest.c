@@ -1,9 +1,7 @@
 #include <snes.h>
 #include "cdata.c"
 #include "entity.c"
-
-
-#define MAP_PAL(x) (x << 10)
+#include "utils.c"
 
 
 //VARIABLES
@@ -32,7 +30,7 @@ Player player1;
 s16 maxDY = 8;
 
 u8 zero[256];
-u8 pallette[512];
+u16 pallette[256];
 u16 map[32*32];
 s16 i;
 
@@ -79,7 +77,18 @@ void init(){
 	consoleInit();
 
 	for ( i = 0; i < 32*32; i++)
-		map[i] = MAP_PAL(i%8) + i /16;
+		map[i] = MAP_PAL((i/128)%8) + i%128;
+
+	for (i = 0; i < 256; i++)
+	{
+		pallette[i] = COLOR(i,0,0);
+	}
+	
+	pallette[0] = COLOR(0,0,0);
+	pallette[1] = COLOR(255,255,255);
+	pallette[2] = COLOR(255,0,0);
+	pallette[3] = COLOR(0,255,0);
+	pallette[4] = COLOR(0,0,255);	
 
     dmaCopyCGram(&d_pal, 0, 256*2); 
 

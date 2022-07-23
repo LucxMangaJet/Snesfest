@@ -2,7 +2,7 @@
 
 .section ".rodata1" superfree
 
-d_pal:              .incbin "Textures/pallette.pal"
+d_pal:              .incbin "Textures/palette.bin"
 d_pal_end:
 
 d_obj_tiles:        .incbin "Textures/CharacterSet.bin"
