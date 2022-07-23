@@ -22,7 +22,7 @@ cleanTex:
 
 convert_palette:
 	@echo converting palette
-	@python3 palette_converter.py  Textures/palette.hex Textures/palette.bin --log
+	@python3 palette_converter.py  Textures/palette.hex Textures/palette.bin --log --tests
 
 
 preview: 

@@ -68,6 +68,7 @@ def run_unit_tests():
     test_hex2snes("080808",0b0000010000100001)
     test_hex2snes("C078B8",0x5df8)
     test_hex2snes("d078b8",0b0101110111111010)
+    test_hex2snes("c0c8d0",0b0110101100111000)
 
 
 

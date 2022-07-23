@@ -77,30 +77,25 @@ void init(){
 	consoleInit();
 
 	for ( i = 0; i < 32*32; i++)
-		map[i] = MAP_PAL((i/128)%8) + i%128;
+		map[i] = i%128;
+
+	u16* ptr =(u16*)(&d_pal);
 
 	for (i = 0; i < 256; i++)
 	{
-		pallette[i] = COLOR(i,0,0);
+		pallette[i] = ptr[i];
 	}
 	
-	pallette[0] = COLOR(0,0,0);
-	pallette[1] = COLOR(255,255,255);
-	pallette[2] = COLOR(255,0,0);
-	pallette[3] = COLOR(0,255,0);
-	pallette[4] = COLOR(0,0,255);	
+	
+	//Palette
+    dmaCopyCGram((u8*)pallette, 0, 256*2); 
 
-    dmaCopyCGram(&d_pal, 0, 256*2); 
-
+	//BG
     bgInitMapSet(0, (u8 *) map, d_map_bg1_size, SC_32x32, 0x0000);
-    
-	// Init graphics pointeur for each BG
     bgSetGfxPtr(0, 0x1000);
 	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
-    
-	//Objects
-	//oamInitGfxSet(&d_obj_tiles, d_obj_tiles_size, (&d_pal +128), 0, 128, 0x2000, OBJ_SIZE16_L32);
-	
+
+	//objects
 	dmaCopyVram(&d_obj_tiles,0x2000, d_obj_tiles_size);
 	oamInitGfxAttr(0x2000, OBJ_SIZE16_L32);
 	
@@ -144,11 +139,6 @@ void updatePlayer(Player* _player){
 }
 
 void update(){
-
-	//consoleDrawText(0,3, "Frame: %d", snes_vblank_count);
-	//consoleDebugEntity(0,4, &player0);
-	//consoleDebugEntity(0,5, &player1);
-
 	updatePlayer(&player0);
 	updatePlayer(&player1);	
 }
