@@ -1,11 +1,4 @@
-import argparse
-from ast import arg
-from cgi import test
-import io
 from argparse import ArgumentParser
-from sys import byteorder
-
-from matplotlib import colors
 
 g_log = False
 args = None
@@ -107,20 +100,18 @@ def run():
     parser = ArgumentParser()
     parser.add_argument("filepath")
     parser.add_argument("outpath")
-    parser.add_argument("--log", action ="store_true")
+    parser.add_argument("--verbose", action ="store_true")
     parser.add_argument("--tests", action ="store_true")
     parser.add_argument("--hex", action ="store_true")
 
     global args
     args = parser.parse_args()
 
-    #validate args
+    #TODO validate args
 
     global g_log
-    if(args.log):
+    if(args.verbose):
         g_log = True
-
-
 
     if(args.tests):
         run_unit_tests()
@@ -132,11 +123,5 @@ def run():
         export_colors_binary(colors)
 
 
-
-
-
-
-
-
-if (__file__ != "__main__"):
+if (__name__ == "__main__"):
     run()
