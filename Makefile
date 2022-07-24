@@ -28,7 +28,7 @@ convert_palette:
 	@echo converting palette
 	$(PALCONV) Textures/palette.hex Textures/palette.bin
 
-convert_maps:
+convert_maps: map_bg1
 
 map_bg1: 
 	$(MAPCONV_BG_4BPP) Textures/BG1.png Textures/BG1.bin

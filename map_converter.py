@@ -56,14 +56,24 @@ def hash_tile(tile):
     return res.value
 
 def hash_tiles(tiles):
-    return [hash_tile(t) for t in tiles]
+    hashes = [hash_tile(t) for t in tiles]
+    index_map = {}
+    for x in range(hashes):
+        index_map[hashes[x]] = x
+    return hashes, index_map
 
 
-
-def build_index_map(hashed_set, hashed_map):
+def build_index_map(hashed_set, hashed_map, hashed_map_index_dict):
     res = []
     for x in hashed_map:
-        res.append(hashed_set.index(x))
+        try:
+            index = hashed_set.index(x)
+            res.append(index)
+        except ValueError:
+            tile_index = hashed_map_index_dict[x]
+            print("Failed to find tile {}".format(tile_index))
+            exit(1)
+            
     return res
 
 #SNES
@@ -93,11 +103,11 @@ def write_bytearray_file(filepath, data):
 
 def run_conversion():
     tiles_set = load_image_to_tiles(args.tileset)
-    hashed_set = hash_tiles(tiles_set)
+    hashed_set, hashed_set_index_dict = hash_tiles(tiles_set)
     tiles_map = load_image_to_tiles(args.tilemap)
-    hashed_map = hash_tiles(tiles_map)
+    hashed_map, hashed_map_index_dict = hash_tiles(tiles_map)
 
-    index_map = build_index_map(hashed_set, hashed_map)
+    index_map = build_index_map(hashed_set, hashed_map, hashed_map_index_dict)
 
     snes_map = build_snes_map(index_map)
     write_bytearray_file(args.outpath, snes_map)
