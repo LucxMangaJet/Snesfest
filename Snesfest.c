@@ -3,34 +3,12 @@
 #include "entity.c"
 #include "utils.c"
 
-
-//VARIABLES
-
-u8 freeEntityID = 0;
-
-u8 newEntityID(){return freeEntityID++;}
-
-typedef struct 
-{
-	Entity entity;
-
-	s16 dx;
-	s16 dy;
-
-	s16 speed;
-	s16 jumpForce;
-	s16 gravity;
-	u8 grounded;
-
-} Player;
-
 Player player0;
 Player player1;
 
 s16 maxDY = 8;
 
 u8 zero[256];
-u16 pallette[256];
 u16 map[32*32];
 s16 i;
 
@@ -54,7 +32,7 @@ void initPlayers(){
 	player0.entity.priority = 3;
 	player0.entity.x = 180;
 	player0.entity.y = 135;
-	player0.entity.palletOffset = 0;
+	player0.entity.palette = 0;
 	setEntityState(&player0.entity,OBJ_LARGE, OBJ_SHOW);
 
 	player1.dx = 0;
@@ -69,6 +47,7 @@ void initPlayers(){
 	player1.entity.y = 135;
 	player1.entity.gfxOffset = 4;
 	player1.entity.flipX = 1;
+	player1.entity.palette = 1;
 	setEntityState(&player1.entity, OBJ_LARGE, OBJ_SHOW);
 }
 
@@ -79,31 +58,8 @@ void init(){
 	for ( i = 0; i < 32*32; i++)
 		map[i] = i%128;
 
-	u16* ptr =(u16*)(&d_pal);
-
-	for (i = 0; i < 256; i++)
-	{
-		pallette[i] = ptr[3];
-	}
-	pallette[0]= 0x5dfa;
-	pallette[1]= 0x7FFF;
-	pallette[2]= 0x0000;
-	pallette[3]= 0x6b38;
-	pallette[4]= 0x5270;
-	pallette[5]= 0x3589;
-	pallette[6]= 0x1443;
-	pallette[7]= 0x1Cc3;
-	pallette[8]= 0x2D23;
-	pallette[9]= 0x2944;
-	pallette[10]= 0x31c9;
-	pallette[11]= 0x42b2;
-	pallette[12]= 0x6fbe;
-	pallette[13]= 0x4f5c;
-	pallette[14]= 0x2adc;
-	pallette[15]= 0x0db5;
-	
 	//Palette
-    dmaCopyCGram((u8*)pallette, 0, 256*2); 
+    dmaCopyCGram(&d_pal, 0, d_pal_size); 
 
 	//BG
     bgInitMapSet(0, (u8 *) map, d_map_bg1_size, SC_32x32, 0x0000);

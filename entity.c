@@ -1,3 +1,6 @@
+#ifndef ENTITY_DEF
+#define ENTITY_DEF
+
 #include <snes.h>
 
 typedef struct
@@ -8,7 +11,7 @@ typedef struct
 	u8 y;
 
 	u8 gfxOffset;
-	u8 palletOffset;
+	u8 palette;
 	u8 priority;
     bool flipX;
 
@@ -22,14 +25,14 @@ Entity defaultEntity(){
     e.x = 0;
     e.y = 0;
     e.gfxOffset = 0;
-    e.palletOffset = 0;
+    e.palette = 0;
     e.priority = 0;
     e.flipX =0;
     return e;
 }
 
 void updateEntity(Entity* _entity){
-	oamSet(_entity->id*4,_entity->x,_entity->y,_entity->priority,_entity->flipX,0,_entity->gfxOffset, _entity->palletOffset);
+	oamSet(_entity->id*4,_entity->x,_entity->y,_entity->priority,_entity->flipX,0,_entity->gfxOffset, _entity->palette);
 }
 
 void setEntityState(Entity* _entity, u8  _size, u8 _hide){
@@ -38,5 +41,8 @@ void setEntityState(Entity* _entity, u8  _size, u8 _hide){
 
 void consoleDebugEntity(u8 x, u8 y, Entity* _entity){
  consoleDrawText(x,y, "%d x:%d y:%d gfx:%d pal:%d p:%d  ",
- (int)_entity->id, (int) _entity->x, (int)_entity->y, (int)_entity->gfxOffset, (int)_entity->palletOffset, (int)_entity->priority);
+ (int)_entity->id, (int) _entity->x, (int)_entity->y, (int)_entity->gfxOffset, (int)_entity->palette, (int)_entity->priority);
 }
+
+
+#endif /* !ENTITY_DEF */

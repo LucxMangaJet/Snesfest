@@ -94,7 +94,7 @@ def collect_colors():
 def export_colors_binary(colors):
     with open(args.outpath, mode = "wb") as f:
         for col in colors:
-            f.write(col.to_bytes(2, byteorder='big'))
+            f.write(col.to_bytes(2, byteorder='little'))
         
 
 def export_colors_hex(colors):

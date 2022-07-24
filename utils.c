@@ -1,10 +1,9 @@
 #include <snes.h>
-
-const u8 COLOR_5b = 0b11111000;
+#include "entity.c"
 
 #define MAP_PAL(x) (x << 10)
 
-
+const u8 COLOR_5b = 0b11111000;
 //0rrrrrgggggbbbbb
 u16 makeColor(u8 r, u8 g, u8 b){
 	u16 res = ((u16)b&COLOR_5b) <<7;
@@ -15,3 +14,22 @@ u16 makeColor(u8 r, u8 g, u8 b){
 }
 
 #define COLOR(r,g,b) makeColor(r,g,b)
+
+
+u8 freeEntityID = 0;
+
+u8 newEntityID(){return freeEntityID++;}
+
+typedef struct 
+{
+	Entity entity;
+
+	s16 dx;
+	s16 dy;
+
+	s16 speed;
+	s16 jumpForce;
+	s16 gravity;
+	u8 grounded;
+
+} Player;
