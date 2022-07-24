@@ -5,12 +5,10 @@
 
 Player player0;
 Player player1;
-
 s16 maxDY = 8;
+s16 i; //iterator
 
-u8 zero[256];
-u16 map[32*32];
-s16 i;
+u8 cloud_scroll =0;
 
 u16 getCollisionTile(u16 x, u16 y) {
 	
@@ -55,26 +53,26 @@ void init(){
 
 	consoleInit();
 
-	for ( i = 0; i < 32*32; i++)
-		map[i] = i%256;
-
 	//Palette
-    dmaCopyCGram(&d_pal, 0, d_pal_size); 
+    dmaCopyCGram(&d_pal, 0, SIZE(d_pal)); 
 
 	//BG
-    bgInitMapSet(0, (u8*) &d_map_bg1, d_map_bg1_size, SC_32x32, 0x0000);
-    bgSetGfxPtr(0, 0x1000);
-	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
+	dmaCopyVram(&d_bg_tiles, 0x0000, SIZE(d_bg_tiles));
+
+    bgSetGfxPtr(0, 0x0000);
+    bgInitMapSet(0, &d_map_bg1, SIZE(d_map_bg1), SC_32x32, 0x4000);
+
+	bgSetGfxPtr(1,0x0000);
+	bgInitMapSet(1,&d_map_bg2, SIZE(d_map_bg2), SC_32x32, 0x5000);
 
 	//objects
-	dmaCopyVram(&d_obj_tiles,0x2000, d_obj_tiles_size);
+	dmaCopyVram(&d_obj_tiles,0x2000, SIZE(d_obj_tiles));
 	oamInitGfxAttr(0x2000, OBJ_SIZE16_L32);
 	
 	initPlayers();
 
 	//
 	setMode(BG_MODE1, 0);
-	bgSetDisable(1);
 	bgSetDisable(2);
 	setScreenOn();
 }
@@ -111,7 +109,12 @@ void updatePlayer(Player* _player){
 
 void update(){
 	updatePlayer(&player0);
-	updatePlayer(&player1);	
+	updatePlayer(&player1);
+
+	if(snes_vblank_count%30==0){
+		cloud_scroll++;
+		bgSetScroll(1,cloud_scroll,0);	
+	}
 }
 
 

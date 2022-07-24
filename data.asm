@@ -14,4 +14,8 @@ d_bg_tiles_end;
 d_map_bg1:          .incbin "Textures/BG1.bin"
 d_map_bg1_end:
 
+d_map_bg2:          .incbin "Textures/BG2.bin"
+d_map_bg2_end:
+
+
 .ends

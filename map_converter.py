@@ -34,8 +34,6 @@ def load_image_to_tiles(path):
         if img.mode != "P":
             raise Exception("Format error image at{} is expected to be in palette mode".format(path))
 
-        log("converting image to tiles: {}".format(img))
-
         data = list(img.getdata())
 
         tiles = []
