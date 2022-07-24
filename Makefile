@@ -10,8 +10,9 @@ include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
 # ROMNAME is used in snes_rules file
 export ROMNAME := Snesfest
 
-export MAPCONV_BG_4BPP := @python3 palette_converter.py --verbose Textures/4BPP_Set.png
-export PALCONV := @python3 map_converter.py --verbose
+export MAPCONV_BG_4BPP := @python3 map_converter.py --verbose Textures/4BPP_Set.png
+export PALCONV := @python3 palette_converter.py --verbose
+
 
 all: bitmaps convert_palette convert_maps $(ROMNAME).sfc preview
 

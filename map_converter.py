@@ -45,7 +45,7 @@ def load_image_to_tiles(path):
         for y in range(tilesCountY):
             for x in range(tilesCountX):
                 tiles.append(sub_array(data, get_tiles_indicies(img.width,x*TILE_SIZE,y*TILE_SIZE)))
-        return tiles
+        return tiles, tilesCountX
 
 def hash_tile(tile):
     p1 = 7
@@ -55,11 +55,11 @@ def hash_tile(tile):
         res = c_uint32(res.value * p2 + c) 
     return res.value
 
-def hash_tiles(tiles):
+def hash_tiles(tiles, width):
     hashes = [hash_tile(t) for t in tiles]
     index_map = {}
-    for x in range(hashes):
-        index_map[hashes[x]] = x
+    for x in range(len(hashes)):
+        index_map[hashes[x]] = (x%width,int(x/width))
     return hashes, index_map
 
 
@@ -102,10 +102,10 @@ def write_bytearray_file(filepath, data):
         f.write(data)
 
 def run_conversion():
-    tiles_set = load_image_to_tiles(args.tileset)
-    hashed_set, hashed_set_index_dict = hash_tiles(tiles_set)
-    tiles_map = load_image_to_tiles(args.tilemap)
-    hashed_map, hashed_map_index_dict = hash_tiles(tiles_map)
+    tiles_set, tiles_set_width = load_image_to_tiles(args.tileset)
+    hashed_set, hashed_set_index_dict = hash_tiles(tiles_set,tiles_set_width)
+    tiles_map, tiles_map_width = load_image_to_tiles(args.tilemap)
+    hashed_map, hashed_map_index_dict = hash_tiles(tiles_map,tiles_map_width)
 
     index_map = build_index_map(hashed_set, hashed_map, hashed_map_index_dict)
 
