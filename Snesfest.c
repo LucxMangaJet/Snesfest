@@ -62,7 +62,7 @@ void init(){
     dmaCopyCGram(&d_pal, 0, d_pal_size); 
 
 	//BG
-    bgInitMapSet(0, (u8 *) map, d_map_bg1_size, SC_32x32, 0x0000);
+    bgInitMapSet(0, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x0000);
     bgSetGfxPtr(0, 0x1000);
 	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
 

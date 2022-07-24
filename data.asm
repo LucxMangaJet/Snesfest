@@ -11,7 +11,7 @@ d_obj_tiles_end:
 d_bg_tiles:         .incbin "Textures/BackgroundSet4BPP.bin"
 d_bg_tiles_end;
 
-d_map_bg1:          .incbin "Maps/map1.bin"
+d_map_bg1:          .incbin "Textures/BG1.bin"
 d_map_bg1_end:
 
 .ends
