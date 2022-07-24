@@ -83,9 +83,24 @@ void init(){
 
 	for (i = 0; i < 256; i++)
 	{
-		pallette[i] = ptr[i];
+		pallette[i] = ptr[3];
 	}
-	
+	pallette[0]= 0x5dfa;
+	pallette[1]= 0x7FFF;
+	pallette[2]= 0x0000;
+	pallette[3]= 0x6b38;
+	pallette[4]= 0x5270;
+	pallette[5]= 0x3589;
+	pallette[6]= 0x1443;
+	pallette[7]= 0x1Cc3;
+	pallette[8]= 0x2D23;
+	pallette[9]= 0x2944;
+	pallette[10]= 0x31c9;
+	pallette[11]= 0x42b2;
+	pallette[12]= 0x6fbe;
+	pallette[13]= 0x4f5c;
+	pallette[14]= 0x2adc;
+	pallette[15]= 0x0db5;
 	
 	//Palette
     dmaCopyCGram((u8*)pallette, 0, 256*2); 

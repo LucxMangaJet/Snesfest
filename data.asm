@@ -1,6 +1,6 @@
 .include "hdr.asm"
 
-.section ".rodata1" superfree
+.section ".rodata0" superfree
 
 d_pal:              .incbin "Textures/palette.bin"
 d_pal_end:
