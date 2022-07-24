@@ -56,13 +56,13 @@ void init(){
 	consoleInit();
 
 	for ( i = 0; i < 32*32; i++)
-		map[i] = i%128;
+		map[i] = i%256;
 
 	//Palette
     dmaCopyCGram(&d_pal, 0, d_pal_size); 
 
 	//BG
-    bgInitMapSet(0, &d_map_bg1, d_map_bg1_size, SC_32x32, 0x0000);
+    bgInitMapSet(0, (u8*) &d_map_bg1, d_map_bg1_size, SC_32x32, 0x0000);
     bgSetGfxPtr(0, 0x1000);
 	dmaCopyVram(&d_bg_tiles, 0x1000, d_bg_tiles_size);
 
@@ -93,10 +93,10 @@ void updatePlayer(Player* _player){
 	u8 x = _player->entity.x + _player->dx;
 	u8 y = _player->entity.y + _player->dy;
 
-	u16 collision =  y > 180; //getCollisionTile(x+ 16, y +32); //center bottom
+	u16 collision =  y > 190; //getCollisionTile(x+ 16, y +32); //center bottom
 
 	if(collision){
-		y = 180;//y & 0xF8;
+		y = 190;//y & 0xF8;
 		_player->dy =0;
 		_player->grounded = 1;
 	}else{

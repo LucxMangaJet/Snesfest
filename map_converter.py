@@ -87,19 +87,14 @@ def build_index_map(hashed_set, hashed_map, hashed_map_index_dict):
 #currently implemented
 #000000tt tttttttt
 def snes_map_tile(vflip, hflip, prio,pal,tile):
-    return ( tile>>8,tile%256) 
+    return tile.to_bytes(2,byteorder ="little") 
 
-def build_snes_map(index_map):
-    arr = bytearray()
-    for x in index_map:
-        bytes = snes_map_tile(0,0,0,0,x)
-        arr.append(bytes[0])
-        arr.append(bytes[1])
     return arr
 
-def write_bytearray_file(filepath, data):
+def write_snesmap_file(filepath, index_map):
     with open(filepath, mode = "wb") as f:
-        f.write(data)
+        for x in index_map:
+            f.write(snes_map_tile(0,0,0,0,x))
 
 def run_conversion():
     tiles_set, tiles_set_width = load_image_to_tiles(args.tileset)
@@ -109,8 +104,7 @@ def run_conversion():
 
     index_map = build_index_map(hashed_set, hashed_map, hashed_map_index_dict)
 
-    snes_map = build_snes_map(index_map)
-    write_bytearray_file(args.outpath, snes_map)
+    write_snesmap_file(args.outpath, index_map)
     
 
 def run():
