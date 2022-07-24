@@ -59,9 +59,9 @@ def hash_tiles(tiles, width):
     hashes = [hash_tile(t) for t in tiles]
     index_map = {}
     for x in range(len(hashes)):
-        index_map[hashes[x]] = (x%width,int(x/width))
+        if hashes[x] not in index_map:
+            index_map[hashes[x]] = (x%width,int(x/width))
     return hashes, index_map
-
 
 def build_index_map(hashed_set, hashed_map, hashed_map_index_dict):
     res = []
@@ -72,7 +72,7 @@ def build_index_map(hashed_set, hashed_map, hashed_map_index_dict):
         except ValueError:
             tile_index = hashed_map_index_dict[x]
             print("Failed to find tile {}".format(tile_index))
-            exit(1)
+            res.append(0)
             
     return res
 
