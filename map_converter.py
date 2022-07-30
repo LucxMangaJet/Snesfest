@@ -4,6 +4,8 @@ from operator import index
 from PIL import Image
 from ctypes import c_uint32
 
+from matplotlib.pyplot import cla
+
 g_log = False
 args = None
 TILE_SIZE = 8
@@ -53,25 +55,41 @@ def hash_tile(tile):
         res = c_uint32(res.value * p2 + c) 
     return res.value
 
+class HashInfo:
+    def __init__(self,indx, x,y, hash) -> None:
+        self.index = indx
+        self.x = x
+        self.y = y
+        self.hash = hash
+        self.hf = False
+        self.vf = False
+        self.pal = 0
+        
+        
 def hash_tiles(tiles, width):
-    hashes = [hash_tile(t) for t in tiles]
-    index_map = {}
-    for x in range(len(hashes)):
-        if hashes[x] not in index_map:
-            index_map[hashes[x]] = (x%width,int(x/width))
-    return hashes, index_map
+    hashes = []
+    for i in range(len(tiles)):
+        x = i%width
+        y = int(i/width)
+        hashes.append(HashInfo(i,x,y,hash_tile(tiles[i])))
+    return hashes
 
-def build_index_map(hashed_set, hashed_map, hashed_map_index_dict):
+def find_matching_tile(hashed_set, tile):
+    for x in hashed_set:
+        if x.hash == tile.hash:
+            return x
+    return None
+
+def build_index_map(hashed_set, hashed_map):
     res = []
-    for x in hashed_map:
-        try:
-            index = hashed_set.index(x)
-            res.append(index)
-        except ValueError:
-            tile_index = hashed_map_index_dict[x]
-            print("Failed to find tile {}".format(tile_index))
+    for map_tile in hashed_map:
+        tile = find_matching_tile(hashed_set, map_tile)
+        if(tile is None):
+            print("Failed to find tile at ({},{})".format(map_tile.x, map_tile.y))
             res.append(0)
-            
+        else:
+            res.append(tile.index)
+
     return res
 
 #SNES
@@ -96,11 +114,11 @@ def write_snesmap_file(filepath, index_map):
 
 def run_conversion():
     tiles_set, tiles_set_width = load_image_to_tiles(args.tileset)
-    hashed_set, hashed_set_index_dict = hash_tiles(tiles_set,tiles_set_width)
+    hashed_set = hash_tiles(tiles_set,tiles_set_width)
     tiles_map, tiles_map_width = load_image_to_tiles(args.tilemap)
-    hashed_map, hashed_map_index_dict = hash_tiles(tiles_map,tiles_map_width)
+    hashed_map = hash_tiles(tiles_map,tiles_map_width)
 
-    index_map = build_index_map(hashed_set, hashed_map, hashed_map_index_dict)
+    index_map = build_index_map(hashed_set, hashed_map)
 
     write_snesmap_file(args.outpath, index_map)
     
