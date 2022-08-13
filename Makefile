@@ -40,16 +40,12 @@ tileset_bg:
 
 convert_palette:
 	@echo converting palette
-	$(PALCONV) Textures/palette.hex Textures/palette.bin
+	$(PALCONV) Textures/palette.hex output/palette.bin
 
-convert_maps: map_bg1 map_bg2
+convert_maps: map_bg1 
 
 map_bg1: 
-	$(MAPCONV_4BPP) Textures/BG1.png Textures/BG1.bin
-
-map_bg2: 
-	$(MAPCONV_4BPP) Textures/BG2.png Textures/BG2.bin
-
+	$(MAPCONV_4BPP) Textures/BG1.png output/BG1.bin
 
 preview: 
 	@higan $(ROMNAME).sfc &

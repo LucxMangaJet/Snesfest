@@ -2,20 +2,16 @@
 
 .section ".rodata0" superfree
 
-d_pal:              .incbin "Textures/palette.bin"
+d_pal:              .incbin "output/palette.bin"
 d_pal_end:
 
-d_obj_tiles:        .incbin "Textures/CharacterSet.bin"
+d_obj_tiles:        .incbin "output/tiles_obj.bin"
 d_obj_tiles_end:
 
-d_bg_tiles:         .incbin "Textures/BackgroundSet4BPP.bin"
+d_bg_tiles:         .incbin "output/tiles_bg.bin"
 d_bg_tiles_end;
 
-d_map_bg1:          .incbin "Textures/BG1.bin"
+d_map_bg1:          .incbin "output/BG1.bin"
 d_map_bg1_end:
-
-d_map_bg2:          .incbin "Textures/BG2.bin"
-d_map_bg2_end:
-
 
 .ends
