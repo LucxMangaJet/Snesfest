@@ -3,12 +3,15 @@
 #include "entity.c"
 #include "utils.c"
 
-Player player;
+Entity player;
 s16 i; //iterator
 
+Entity enemies[64];
+u8 enemies_count = 0;
+u8 enemies_max = 8;
 
-#define camX (player.entity.x -112)
-#define camY (player.entity.y -96)
+#define camX (player.x -112)
+#define camY (player.y -96)
 
 
 u8 isColliding_32x32(Entity* _entity, u16 _wx, u16 _wy){
@@ -18,18 +21,32 @@ u8 isColliding_32x32(Entity* _entity, u16 _wx, u16 _wy){
 	return (_wx >= ex) && (_wy >= ey) && (_wx <= ex + 32) && (_wy <= ey + 32);	
 }
 
+void initEnemy(Entity* _enemy, u8 _id){	
+	initEntity(_enemy);
+	_enemy->id = 64 + _id;
+	_enemy->priority = 3;
+	_enemy->speed = 4;
+	_enemy->x = _id*32;
+	_enemy->y = 0;
+	_enemy->palette = 1;
+	setEntityState(_enemy,OBJ_LARGE, OBJ_SHOW);
+}
 
-void initPlayers(){
 
+void initEnemies(){
+	for (i = 0; i < enemies_max; i++){
+		initEnemy(&enemies[i],i);
+	}
+	enemies_count = enemies_max;
+}
+
+void initPlayer(){
+	initEntity(&player);
+	player.id = newEntityID();
+	player.priority = 3;
 	player.health = 3;
 	player.speed = 4;
-	player.entity = defaultEntity();
-	player.entity.id = newEntityID();
-	player.entity.priority = 3;
-	player.entity.x = 0;
-	player.entity.y = 0;
-	player.entity.palette = 0;
-	setEntityState(&player.entity,OBJ_LARGE, OBJ_SHOW);
+	setEntityState(&player,OBJ_LARGE, OBJ_SHOW);
 }
 
 void init(){
@@ -49,8 +66,9 @@ void init(){
 	dmaCopyVram(&d_obj_tiles,0x2000, SIZE(d_obj_tiles));
 	oamInitGfxAttr(0x2000, OBJ_SIZE16_L32);
 	
-	initPlayers();
-
+	initPlayer();
+	initEnemies();
+	
 	//
 	setMode(BG_MODE1, 0);
 	bgSetDisable(1);
@@ -58,47 +76,39 @@ void init(){
 	setScreenOn();
 }
 
-void updatePlayer(Player* _player){
 
-	if(_player->dx != 0)
-		_player->entity.flipX = _player->dx <0;
-
-	u8 x = _player->entity.x + _player->dx;
-	u8 y = player.entity.y + _player->dy;
-
-	player.entity.x = x;
-	player.entity.y = y;
-
-	updateEntity(&_player->entity, camX, camY);
-}
 
 void update(){
-	updatePlayer(&player);
 
-	bgSetScroll(1,camX,camY);	
+	for (i = 0; i < enemies_count; i++){
+		updateEntity(&enemies[i], camX,camY);
+	}
+
+	updateEntity(&player, camX, camY);
+	bgSetScroll(0,camX,camY);	
 }
 
 
-void processPlayerInput(u16 _pad, Player* _player){
+void processPlayerInput(u16 _pad){
 
-	if(_pad & KEY_RIGHT)
-		_player->dx  = _player->speed;
-	else if(_pad & KEY_LEFT)
-		_player->dx = -_player->speed;
-	else 
-	 	_player->dx = 0;
+	if(_pad & KEY_RIGHT){
+		player.x  += player.speed;
+		player.flipX = false;
+	}
+	else if(_pad & KEY_LEFT){
+		player.x -= player.speed;
+		player.flipX = true;
+	}
 
 	if(_pad & KEY_UP)
-		_player->dy = -_player->speed;
+		player.y -= player.speed;
 	else if(_pad & KEY_DOWN)
-		_player->dy = _player->speed;
-	else 
-		_player->dy = 0;
+		player.y += player.speed;
 }
 
 void processInput(){
 
-	processPlayerInput(padsCurrent(0), &player);
+	processPlayerInput(padsCurrent(0));
 }
 
 int main(void) {	

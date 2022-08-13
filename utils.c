@@ -18,15 +18,3 @@ u16 makeColor(u8 r, u8 g, u8 b){
 u8 freeEntityID = 0;
 
 u8 newEntityID(){return freeEntityID++;}
-
-typedef struct 
-{
-	Entity entity;
-
-	s16 dx;
-	s16 dy;
-
-	s8 speed;
-	u8 health;
-
-} Player;
