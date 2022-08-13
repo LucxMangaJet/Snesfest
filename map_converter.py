@@ -4,7 +4,6 @@ from operator import index
 from PIL import Image
 from ctypes import c_uint32
 
-from matplotlib.pyplot import cla
 
 g_log = False
 args = None
