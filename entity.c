@@ -7,8 +7,8 @@ typedef struct
 {
 	u8 id;
 
-	u8 x;
-	u8 y;
+	u16 x;
+	u16 y;
 
 	u8 gfxOffset;
 	u8 palette;
@@ -31,8 +31,8 @@ Entity defaultEntity(){
     return e;
 }
 
-void updateEntity(Entity* _entity){
-	oamSet(_entity->id*4,_entity->x,_entity->y,_entity->priority,_entity->flipX,0,_entity->gfxOffset, _entity->palette);
+void updateEntity(Entity* _entity, u16 _camX, u16 _camY){
+	oamSet(_entity->id*4,(u8)(_entity->x - _camX), (u8)(_entity->y - _camY),_entity->priority,_entity->flipX,0,_entity->gfxOffset, _entity->palette);
 }
 
 void setEntityState(Entity* _entity, u8  _size, u8 _hide){

@@ -26,9 +26,7 @@ typedef struct
 	s16 dx;
 	s16 dy;
 
-	s16 speed;
-	s16 jumpForce;
-	s16 gravity;
-	u8 grounded;
+	s8 speed;
+	u8 health;
 
 } Player;
